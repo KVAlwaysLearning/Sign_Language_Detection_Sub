@@ -102,7 +102,7 @@ with tab3:
                     ret, frame = cap.read()
                     if not ret: break
                     
-                    word_model = load_word_model()
+                    word_model = load_models()[1]
                     results = word_model(frame, verbose=False)
                     label = results[0].names[results[0].probs.top1]
                     
