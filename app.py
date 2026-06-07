@@ -75,27 +75,69 @@ for tab, key, title, model_load in [(tab1, "alpha", "Alphabet", load_models()[0]
 
 # Logic for Tab 3 (Video Analysis)
 with tab3:
-    st.header("🎥 Background Word Analysis")
-    uploaded = st.file_uploader("Upload video", type=['mp4', 'mov', 'avi'], key="w_v")
-    if uploaded:
+    st.header("🎥 Word Identification (Background Analysis)")
+    uploaded_video = st.file_uploader("Upload a sign video for analysis", type=['mp4', 'mov', 'avi'], key="w_v")
+    
+    if uploaded_video:
         tfile = tempfile.NamedTemporaryFile(delete=False, suffix='.mp4')
-        tfile.write(uploaded.read())
-        tfile.close()
+        tfile.write(uploaded_video.read())
+        tfile.close() 
+
+        st.info("✅ Video uploaded. Click the button below to start the background AI analysis.")
+
         if st.button("🔍 Start AI Word Analysis"):
             cap = cv2.VideoCapture(tfile.name)
-            win = []
-            progress = st.progress(0)
-            while cap.isOpened():
-                ret, frame = cap.read()
-                if not ret: break
-                label = load_models()[1](frame, verbose=False)[0].names[0]
-                win.append(label)
-                if len(win) > 12: win.pop(0)
-                if len(win) == 12:
-                    common = Counter(win).most_common(1)[0][0]
-                    if common not in ["Nothing", "Space"]: st.write(f"Detected: {common}")
-            cap.release()
-            os.unlink(tfile.name)
+            
+            if not cap.isOpened():
+                st.error("Error: System could not read the video file.")
+            else:
+                WINDOW_SIZE, VOTE_THRESHOLD = 12, 8
+                final_word, last_word, prediction_window = "", None, []
+                total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+                current_frame = 0
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+
+                while cap.isOpened():
+                    ret, frame = cap.read()
+                    if not ret: break
+                    
+                    word_model = load_models()[1]
+                    results = word_model(frame, verbose=False)
+                    label = results[0].names[results[0].probs.top1]
+                    
+                    prediction_window.append(label)
+                    if len(prediction_window) > WINDOW_SIZE: 
+                        prediction_window.pop(0)
+                    
+                    if len(prediction_window) == WINDOW_SIZE:
+                        counts = Counter(prediction_window)
+                        common, count = counts.most_common(1)[0]
+                        
+                        if count >= VOTE_THRESHOLD and common != last_word:
+                            if common not in ["Nothing", "Space"]:
+                                final_word += f" {common}"
+                                last_word = common
+                                prediction_window = []
+
+                    current_frame += 1
+                    if current_frame % 5 == 0:
+                        progress_val = min(current_frame / total_frames, 1.0)
+                        progress_bar.progress(progress_val)
+                        status_text.text(f"Processing frame {current_frame}/{total_frames}...")
+
+                cap.release()
+                progress_bar.empty()
+                status_text.empty()
+                
+                if final_word.strip():
+                    st.success(f"🏆 **Final Identified Word(s):** {final_word.strip()}")
+                else:
+                    st.warning("⚠️ No sign language words were clearly detected in this video.")
+
+        if os.path.exists(tfile.name):
+            try: os.unlink(tfile.name)
+            except: pass
 
 # Logic for Tab 4 (Live Webcam)
 with tab4:
