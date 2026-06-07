@@ -58,7 +58,7 @@ class ASLTransformer(VideoTransformerBase):
 
 # --- APP UI ---
 st.set_page_config(page_title="ASL Recognition System", layout="wide")
-st.title("🤟 ASL Sign Language Recognition")
+st.title("🔠✋👌✌✊🔠 ASL Sign Language Recognition")
 
 tab1, tab2, tab3, tab4 = st.tabs(["🔤 Alphabet (Img)", "📝 Word (Img)", "🎥 Word (Video)", "🔴 Live Webcam"])
 
