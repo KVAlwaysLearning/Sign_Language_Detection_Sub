@@ -19,7 +19,13 @@ WORD_MODEL_PATH = 'best_video_words.pt'
 # --- STARTUP: DOWNLOAD MODELS ---
 @st.cache_resource
 def download_models():
-    models_to_download = [(ALPHABET_MODEL_ID, ALPHABET_MODEL_PATH), (WORD_MODEL_ID, WORD_MODEL_PATH)]
+    # Retrieve secrets dynamically
+    ids = st.secrets["drive_ids"]
+    models_to_download = [
+        (ids["alphabet_model"], 'best_image_alphabet.pt'), 
+        (ids["word_model"], 'best_video_words.pt')
+    ]
+    
     for file_id, output_path in models_to_download:
         if not os.path.exists(output_path):
             gdown.download(f'https://drive.google.com/uc?id={file_id}', output_path, quiet=False)
