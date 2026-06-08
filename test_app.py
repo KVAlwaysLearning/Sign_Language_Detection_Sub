@@ -10,6 +10,11 @@ from PIL import Image
 from collections import Counter
 from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
 
+# --- CONFIGURATION ---
+# We define file paths locally
+ALPHABET_MODEL_PATH = 'best_image_alphabet.pt'
+WORD_MODEL_PATH = 'best_video_words.pt'
+
 
 # --- STARTUP: DOWNLOAD MODELS ---
 @st.cache_resource
