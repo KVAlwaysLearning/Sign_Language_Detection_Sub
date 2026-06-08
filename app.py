@@ -75,7 +75,7 @@ current_hour = now_ist.hour
 current_time_str = now_ist.strftime("%I:%M %p")
 
 # Check if within 6 PM (18) and 10 PM (22)
-if not (18 <= current_hour < 23):
+if not (18 <= current_hour < 22):
     st.error(f"⏰ Service Unavailable. Current IST time is {current_time_str}.")
     st.info("The application is only operational between 6:00 PM and 10:00 PM IST.")
     st.stop()
