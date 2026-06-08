@@ -66,7 +66,14 @@ class ASLTransformer(VideoTransformerBase):
 st.set_page_config(page_title="ASL Recognition System", layout="wide")
 st.title("🔠✋👌✌✊🔠 ASL Sign Language Recognition")
 
+# Check time window (6:00 PM = 18:00, 10:00 PM = 22:00)
+current_hour = datetime.now().hour
+if not (18 <= current_hour < 22):
+    st.error("⏰ This service is only available between 6:00 PM and 10:00 PM.")
+    st.stop()  # This halts execution of all code below this line
+
 tab1, tab2, tab3, tab4 = st.tabs(["🔤 Alphabet (Img)", "📝 Word (Img)", "🎥 Word (Video)", "🔴 Live Webcam"])
+
 
 # Logic for Tab 1 & 2
 for tab, key, title, model_load in [(tab1, "alpha", "Alphabet", load_models()[0]), (tab2, "w_i", "Word", load_models()[1])]:
