@@ -9,7 +9,7 @@ from datetime import datetime
 from PIL import Image
 from collections import Counter
 from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 # --- CONFIGURATION ---
 # We define file paths locally
@@ -67,13 +67,17 @@ class ASLTransformer(VideoTransformerBase):
 st.set_page_config(page_title="ASL Recognition System", layout="wide")
 st.title("🔠✋👌✌✊🔠 ASL Sign Language Recognition")
 
-# Define operational hours (6:00 PM to 10:00 PM)
-current_hour = datetime.now().hour
-current_time_str = datetime.now().strftime("%I:%M %p")
+# Define IST timezone (UTC + 5:30)
+ist_timezone = timezone(timedelta(hours=5, minutes=30))
+now_ist = datetime.now(ist_timezone)
 
+current_hour = now_ist.hour
+current_time_str = now_ist.strftime("%I:%M %p")
+
+# Check if within 6 PM (18) and 10 PM (22)
 if not (18 <= current_hour < 22):
-    st.error(f"⏰ Service Unavailable. Current time is {current_time_str}.")
-    st.info("The application is only operational between 6:00 PM and 10:00 PM.")
+    st.error(f"⏰ Service Unavailable. Current IST time is {current_time_str}.")
+    st.info("The application is only operational between 6:00 PM and 10:00 PM IST.")
     st.stop()
 
 tab1, tab2, tab3, tab4 = st.tabs(["🔤 Alphabet (Img)", "📝 Word (Img)", "🎥 Word (Video)", "🔴 Live Webcam"])
