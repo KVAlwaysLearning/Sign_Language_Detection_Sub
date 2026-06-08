@@ -11,10 +11,10 @@ from collections import Counter
 from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
 
 # --- CONFIGURATION ---
-ALPHABET_MODEL_ID = "1Cwrlihua2N9Z-2W_RxyV-KzCPFSwplw6"
-WORD_MODEL_ID = "1ON3LrBqyBCsW7k6kk35IDbujs-k8CXBK"
+# We define file paths locally
 ALPHABET_MODEL_PATH = 'best_image_alphabet.pt'
 WORD_MODEL_PATH = 'best_video_words.pt'
+
 
 # --- STARTUP: DOWNLOAD MODELS ---
 @st.cache_resource
