@@ -68,7 +68,7 @@ st.title("🔠✋👌✌✊🔠 ASL Sign Language Recognition")
 
 # Check time window (6:00 PM = 18:00, 10:00 PM = 22:00)
 current_hour = datetime.now().hour
-if not (18 <= current_hour < 22):
+if not (18 <= current_hour < 23):
     st.error("⏰ This service is only available between 6:00 PM and 10:00 PM.")
     st.stop()  # This halts execution of all code below this line
 
